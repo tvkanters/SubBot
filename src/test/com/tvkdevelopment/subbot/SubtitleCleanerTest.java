@@ -22,7 +22,8 @@ public class SubtitleCleanerTest {
                 "Synced & corrected by\nGhostedNet",
                 "_",
                 "© Anosomething\nhttp://thepiratebay.se/something",
-                "Downloaded from kat.cr"
+                "Downloaded from kat.cr",
+                "Want sharper video quality? Want\nclearer audio? Try GOM Player now!"
         };
         
         final String expected =
@@ -46,7 +47,8 @@ public class SubtitleCleanerTest {
                 "<I>- [MUSIC]</I>",
                 "- ¶ ¶ ♪ ♫",
                 "<i>¶ ¶ ♪ ♫</i>",
-                "[blaring continues] <i>¶ ¶</i>"
+                "[blaring continues] <i>¶ ¶</i>",
+                "(\"It's The End Of The World As We Know lt\"\nby REM)"
         };
         
         final String expectedSingleBlock =

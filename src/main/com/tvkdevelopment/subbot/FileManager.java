@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.regex.Pattern;
 
 public class FileManager {
@@ -32,6 +35,15 @@ public class FileManager {
 
     public static File[] getVideoFiles(final File directory) {
         return directory.listFiles(filename -> sVideoFilePattern.matcher(filename.getName()).find());
+    }
+
+    public static String readFile(final String filePath, final String characterEncoding) {
+        try {
+            return String.join("\n", Files.readAllLines(Paths.get(filePath), Charset.forName(characterEncoding)));
+        } catch (final IOException e) {
+            System.err.println("Could read file " + filePath);
+            return null;
+        }
     }
 
     public static void saveFile(final File file, final String contents, final String characterEncoding) {

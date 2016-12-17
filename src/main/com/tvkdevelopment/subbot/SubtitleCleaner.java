@@ -23,7 +23,8 @@ public class SubtitleCleaner {
             Pattern.compile("LookLive", Pattern.CASE_INSENSITIVE),
             Pattern.compile("recast\\.ai", Pattern.CASE_INSENSITIVE),
             Pattern.compile("bitninja", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("^[ _-]+$", Pattern.CASE_INSENSITIVE)
+            Pattern.compile("^[ _-]+$", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("GOM\\s*Player", Pattern.CASE_INSENSITIVE)
     };
 
     private static final Pattern[] sCreditsPatterns = {
@@ -42,15 +43,18 @@ public class SubtitleCleaner {
 
     private static final Pattern[] sHearingImpairedPatterns = {
             Pattern.compile("(?:<i>)?(?:- ?)?\\[[^\\]]*\\](?:</i>)?" + NEW_LINE + "?", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("(?:<i>)?(?:- ?)?\\([^)]*\\)(?:</i>)?" + NEW_LINE + "?", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
             Pattern.compile("^(?:<i>)?[¶♪♫ \\n\\r-]*(?:</i>)?(?:" + NEW_LINE + "|$)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE)
     };
 
     private static final Pattern[] sReplacementPatterns = {
-            Pattern.compile("\\. \\. \\.")
+            Pattern.compile("\\. \\. \\."),
+            Pattern.compile(" ([?!])", Pattern.CASE_INSENSITIVE)
     };
 
     private static final String[] sReplacementResults = {
-            "..."
+            "...",
+            "$1"
     };
 
     public static String clean(final String subtitle) {
