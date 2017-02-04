@@ -1,10 +1,14 @@
 package com.tvkdevelopment.subbot;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 
 public class CleanerSubBot {
 
-    private static final String CHARACTER_ENCODING = "UTF-8";
+    private static final String[] CHARACTER_ENCODING = {
+            StandardCharsets.UTF_8.name(),
+            StandardCharsets.ISO_8859_1.name()
+    };
 
     @SuppressWarnings("unused")
     public static void main(final String[] args) {
@@ -13,9 +17,15 @@ public class CleanerSubBot {
             return;
         }
 
-        final String contents = FileManager.readFile(args[0], CHARACTER_ENCODING);
-        final String cleanedContents = SubtitleCleaner.clean(contents);
-        FileManager.saveFile(new File(args[0]), cleanedContents, CHARACTER_ENCODING);
+        for (final String characterEncoding : CHARACTER_ENCODING) {
+            final String contents = FileManager.readFile(args[0], characterEncoding);
+            if (contents == null) {
+                System.out.println("Encoding " + characterEncoding + " invalid");
+                continue;
+            }
+            final String cleanedContents = SubtitleCleaner.clean(contents);
+            FileManager.saveFile(new File(args[0]), cleanedContents, characterEncoding);
+        }
     }
 
 }

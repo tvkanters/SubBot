@@ -21,6 +21,7 @@ public class SubtitleCleanerTest {
                 "Shop this shows fashion, download the\n\"LookLive\" app in iTunes",
                 "Synced & corrected by\nGhostedNet",
                 "_",
+                "- _\n\r- _",
                 "© Anosomething\nhttp://thepiratebay.se/something",
                 "Downloaded from kat.cr",
                 "Want sharper video quality? Want\nclearer audio? Try GOM Player now!"
@@ -72,6 +73,7 @@ public class SubtitleCleanerTest {
                 "- ¶ ¶ ♪ ♫",
                 "<i>¶ ¶" + System.getProperty("line.separator") + "♪ ♫</i>",
                 "<i>[I Monster's" + System.getProperty("line.separator") + "\"Daydream In Blue\" playing]</i>",
+                "(!)"
         };
 
         final String firstBlock =

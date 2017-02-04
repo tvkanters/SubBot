@@ -41,7 +41,7 @@ public class FileManager {
         try {
             return String.join("\n", Files.readAllLines(Paths.get(filePath), Charset.forName(characterEncoding)));
         } catch (final IOException e) {
-            System.err.println("Could read file " + filePath);
+            System.err.println("Couldn't read file " + filePath);
             return null;
         }
     }

@@ -23,7 +23,7 @@ public class SubtitleCleaner {
             Pattern.compile("LookLive", Pattern.CASE_INSENSITIVE),
             Pattern.compile("recast\\.ai", Pattern.CASE_INSENSITIVE),
             Pattern.compile("bitninja", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("^[ _-]+$", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("^[\\s_-]+$", Pattern.CASE_INSENSITIVE),
             Pattern.compile("GOM\\s*Player", Pattern.CASE_INSENSITIVE)
     };
 
@@ -49,11 +49,15 @@ public class SubtitleCleaner {
 
     private static final Pattern[] sReplacementPatterns = {
             Pattern.compile("\\. \\. \\."),
+            Pattern.compile("\\(!\\)"),
+            Pattern.compile("(\\s|^)([cC])os(\\s|$)"),
             Pattern.compile(" ([?!])", Pattern.CASE_INSENSITIVE)
     };
 
     private static final String[] sReplacementResults = {
             "...",
+            "",
+            "$1'$2ause$3",
             "$1"
     };
 
