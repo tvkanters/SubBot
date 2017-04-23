@@ -24,7 +24,9 @@ public class SubtitleCleanerTest {
                 "- _\n\r- _",
                 "© Anosomething\nhttp://thepiratebay.se/something",
                 "Downloaded from kat.cr",
-                "Want sharper video quality? Want\nclearer audio? Try GOM Player now!"
+                "Want sharper video quality? Want\nclearer audio? Try GOM Player now!",
+                "StreamBox Pro - Best box for movies & shows on your TV!\nCheck out the reviews and order on GRATISSTREAMEN.NL",
+                "Professional Translation Services\nwww.gts-translation.com"
         };
         
         final String expected =

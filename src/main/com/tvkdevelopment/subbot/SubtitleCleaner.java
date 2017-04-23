@@ -24,7 +24,9 @@ public class SubtitleCleaner {
             Pattern.compile("recast\\.ai", Pattern.CASE_INSENSITIVE),
             Pattern.compile("bitninja", Pattern.CASE_INSENSITIVE),
             Pattern.compile("^[\\s_-]+$", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("GOM\\s*Player", Pattern.CASE_INSENSITIVE)
+            Pattern.compile("GOM\\s*Player", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("StreamBox", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("gts-translation\\.com", Pattern.CASE_INSENSITIVE)
     };
 
     private static final Pattern[] sCreditsPatterns = {
