@@ -16,8 +16,9 @@ public class SubtitleParser {
                         "(?<id>\\d+)" + SPACES + NEW_LINE
                         + "(?<startHours>\\d+):(?<startMinutes>\\d{1,2}):(?<startSeconds>\\d{1,2}),(?<startMilliseconds>\\d{1,3})"
                         + SPACES + "-->" + SPACES
-                        + "(?<endHours>\\d+):(?<endMinutes>\\d\\d):(?<endSeconds>\\d\\d),(?<endMilliseconds>\\d\\d\\d)"
-                        + SPACES + "(X1:\\d.*?)??" + NEW_LINE + "(?<text>(.|[\\r\\n])*?)"
+                        + "(?<endHours>\\d+):(?<endMinutes>\\d{1,2}):(?<endSeconds>\\d{1,2}),(?<endMilliseconds>\\d{1,3})"
+                        + SPACES + "(X1:\\d.*?)??"
+                        + "(" + NEW_LINE + "(?<text>(.|[\\r\\n])*?)" + ")??"
                         + "(" + NEW_LINE + NEW_LINE + "|" + NEW_LINE + "*$)");
 
     public static List<SubtitleBlock> parseSubtitle(final String subtitle) {
@@ -28,12 +29,16 @@ public class SubtitleParser {
             final int id = Integer.parseInt(matcher.group("id"));
             final SubtitleTimestamp start = new SubtitleTimestamp(matcher.group("startHours"), matcher.group("startMinutes"), matcher.group("startSeconds"), matcher.group("startMilliseconds"));
             final SubtitleTimestamp end = new SubtitleTimestamp(matcher.group("endHours"), matcher.group("endMinutes"), matcher.group("endSeconds"), matcher.group("endMilliseconds"));
-            final String text = matcher.group("text");
+            final String text = emptyIfNull(matcher.group("text"));
 
             subtitleBlocks.add(new SubtitleBlock(id, start, end, text));
         }
 
         return subtitleBlocks;
+    }
+
+    private static String emptyIfNull(final String str) {
+        return (str == null ? "" : str);
     }
 
 }

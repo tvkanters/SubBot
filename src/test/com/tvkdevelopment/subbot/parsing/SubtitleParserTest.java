@@ -129,6 +129,30 @@ public class SubtitleParserTest {
         assertBlocksEqual(expected, result);
     }
 
+    @Test
+    public void testEmptySubtitleText() throws FilenameFormatException {
+        final List<SubtitleBlock> result = SubtitleParser.parseSubtitle(
+                "1\n" +
+                "00:00:05,913 --> 00:00:06,744\n" +
+                "\n" +
+                "2\n" +
+                "00:01:06,745 --> 00:01:07,710\n" +
+                "What are you talking about?\n" +
+                "\n");
+
+        final List<SubtitleBlock> expected = new ArrayList<>();
+        expected.add(new SubtitleBlock(1,
+                new SubtitleTimestamp("00", "00", "05", "913"),
+                new SubtitleTimestamp("00", "00", "06", "744"),
+                ""));
+        expected.add(new SubtitleBlock(2,
+                new SubtitleTimestamp("00", "01", "06", "745"),
+                new SubtitleTimestamp("00", "01", "07", "710"),
+                "What are you talking about?"));
+
+        assertBlocksEqual(expected, result);
+    }
+
     private static void assertBlocksEqual(final List<SubtitleBlock> expected, final List<SubtitleBlock> result) {
         assertEquals("Amount of blocks", expected.size(), result.size());
 
