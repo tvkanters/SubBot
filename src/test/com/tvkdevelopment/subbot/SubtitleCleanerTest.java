@@ -26,7 +26,8 @@ public class SubtitleCleanerTest {
                 "Downloaded from kat.cr",
                 "Want sharper video quality? Want\nclearer audio? Try GOM Player now!",
                 "StreamBox Pro - Best box for movies & shows on your TV!\nCheck out the reviews and order on GRATISSTREAMEN.NL",
-                "Professional Translation Services\nwww.gts-translation.com"
+                "Professional Translation Services\nwww.gts-translation.com",
+                "Watch all episodes for free on\nwww.FlixTor.to"
         };
         
         final String expected =
@@ -51,7 +52,7 @@ public class SubtitleCleanerTest {
                 "- ¶ ¶ ♪ ♫",
                 "<i>¶ ¶ ♪ ♫</i>",
                 "[blaring continues] <i>¶ ¶</i>",
-                "(\"It's The End Of The World As We Know lt\"\nby REM)"
+                "(\"It's The End Of The World As We Know lt\"\nby REM)",
         };
         
         final String expectedSingleBlock =
@@ -75,7 +76,8 @@ public class SubtitleCleanerTest {
                 "- ¶ ¶ ♪ ♫",
                 "<i>¶ ¶" + System.getProperty("line.separator") + "♪ ♫</i>",
                 "<i>[I Monster's" + System.getProperty("line.separator") + "\"Daydream In Blue\" playing]</i>",
-                "(!)"
+                "(!)",
+                "- _"
         };
 
         final String firstBlock =

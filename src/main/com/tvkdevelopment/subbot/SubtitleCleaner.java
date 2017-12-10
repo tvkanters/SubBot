@@ -23,10 +23,11 @@ public class SubtitleCleaner {
             Pattern.compile("LookLive", Pattern.CASE_INSENSITIVE),
             Pattern.compile("recast\\.ai", Pattern.CASE_INSENSITIVE),
             Pattern.compile("bitninja", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("^[\\s_-]+$", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("^[\\s*_-]+$", Pattern.CASE_INSENSITIVE),
             Pattern.compile("GOM\\s*Player", Pattern.CASE_INSENSITIVE),
             Pattern.compile("StreamBox", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("gts-translation\\.com", Pattern.CASE_INSENSITIVE)
+            Pattern.compile("gts-translation\\.com", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("FlixTor", Pattern.CASE_INSENSITIVE)
     };
 
     private static final Pattern[] sCreditsPatterns = {
@@ -53,14 +54,16 @@ public class SubtitleCleaner {
             Pattern.compile("\\. \\. \\."),
             Pattern.compile("\\(!\\)"),
             Pattern.compile("(\\s|^)([cC])os(\\s|$)"),
-            Pattern.compile(" ([?!])", Pattern.CASE_INSENSITIVE)
+            Pattern.compile(" ([?!])", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("([\\n\\r]+|^)-?\\s*_(?=([\\n\\r]+|$))")
     };
 
     private static final String[] sReplacementResults = {
             "...",
             "",
             "$1'$2ause$3",
-            "$1"
+            "$1",
+            ""
     };
 
     public static String clean(final String subtitle) {
