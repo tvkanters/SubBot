@@ -27,7 +27,7 @@ public class SubtitleCleaner {
             Pattern.compile("GOM\\s*Player", Pattern.CASE_INSENSITIVE),
             Pattern.compile("StreamBox", Pattern.CASE_INSENSITIVE),
             Pattern.compile("gts-translation\\.com", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("AmericansCardroom", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("AmericasCardroom", Pattern.CASE_INSENSITIVE),
             Pattern.compile("FlixTor", Pattern.CASE_INSENSITIVE)
     };
 
