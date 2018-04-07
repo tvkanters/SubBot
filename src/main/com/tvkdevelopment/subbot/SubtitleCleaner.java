@@ -10,7 +10,7 @@ public class SubtitleCleaner {
 
     private static final boolean STRIP_SPAM = true;
     private static final boolean STRIP_CREDITS = true;
-    private static final boolean STRIP_HEARING_IMPAIRED = true;
+    private static final boolean STRIP_HEARING_IMPAIRED = !Config.HEARING_IMPAIRED_MODE;
     private static final boolean REPLACEMENTS = true;
 
     private static final String NEW_LINE = "(?:\\r?\\n)";
@@ -27,6 +27,7 @@ public class SubtitleCleaner {
             Pattern.compile("GOM\\s*Player", Pattern.CASE_INSENSITIVE),
             Pattern.compile("StreamBox", Pattern.CASE_INSENSITIVE),
             Pattern.compile("gts-translation\\.com", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("AmericansCardroom", Pattern.CASE_INSENSITIVE),
             Pattern.compile("FlixTor", Pattern.CASE_INSENSITIVE)
     };
 
@@ -51,11 +52,11 @@ public class SubtitleCleaner {
     };
 
     private static final Pattern[] sReplacementPatterns = {
-            Pattern.compile("\\. \\. \\."),
-            Pattern.compile("\\(!\\)"),
-            Pattern.compile("(\\s|^)([cC])os(\\s|$)"),
-            Pattern.compile(" ([?!])", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("([\\n\\r]+|^)-?\\s*_(?=([\\n\\r]+|$))")
+            Pattern.compile("\\. \\. \\."), // Ellipsis
+            Pattern.compile("\\(!\\)"), // Singular exclamation
+            Pattern.compile("(\\s|^)([cC])os(\\s|$)"), // cos -> 'cause
+            Pattern.compile(" ([?!])", Pattern.CASE_INSENSITIVE), // Spaces before exclamation
+            Pattern.compile("([\\n\\r]+|^)-?\\s*_(?=([\\n\\r]+|$))") // Just underscores
     };
 
     private static final String[] sReplacementResults = {

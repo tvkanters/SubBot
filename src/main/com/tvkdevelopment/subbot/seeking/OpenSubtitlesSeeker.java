@@ -23,6 +23,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 
+import com.tvkdevelopment.subbot.Config;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
@@ -39,7 +40,7 @@ public class OpenSubtitlesSeeker implements SubtitlesSeeker {
     private static final String STATUS_OK = "200 OK";
     private static final int HASH_CHUNK_SIZE = 64 * 1024;
 
-    private static final boolean ALLOW_HEARING_IMPAIRED_SUBTITLES = false;
+    private static final boolean PRIORITISE_HEARING_IMPAIRED = Config.HEARING_IMPAIRED_MODE;
 
     private final XmlRpcClient mClient;
     private String mToken = null;
@@ -165,7 +166,7 @@ public class OpenSubtitlesSeeker implements SubtitlesSeeker {
     @Override
     public Optional<List<SubtitleSearchResult>> search(final File file) {
         System.out.println("Searching subtitles for " + file);
-        final Map<String, String> movieInfo = new HashMap<String, String>();
+        final Map<String, String> movieInfo = new HashMap<>();
         movieInfo.put("moviehash", hashVideoFile(file));
         movieInfo.put("moviebytesize", Long.toString(file.length()));
         movieInfo.put("sublanguageid", SUBTITLE_LANGUAGE);
@@ -175,7 +176,7 @@ public class OpenSubtitlesSeeker implements SubtitlesSeeker {
     @Override
     public Optional<List<SubtitleSearchResult>> search(final String query) {
         System.out.println("Searching subtitles for " + query);
-        final Map<String, String> movieInfo = new HashMap<String, String>();
+        final Map<String, String> movieInfo = new HashMap<>();
         movieInfo.put("query", query);
         movieInfo.put("sublanguageid", SUBTITLE_LANGUAGE);
         return performSearch(movieInfo);
@@ -196,26 +197,33 @@ public class OpenSubtitlesSeeker implements SubtitlesSeeker {
     }
 
     private List<SubtitleSearchResult> parseSearchResult(final Map<?, ?> searchResult) {
-        final List<SubtitleSearchResult> subtitleSearchResults = new ArrayList<>();
+        final List<SubtitleSearchResult> resultsNonHearingImpaired = new ArrayList<>();
+        final List<SubtitleSearchResult> resultsHearingImpaired = new ArrayList<>();
         final Object[] data = (Object[]) searchResult.get("data");
         for (final Object entry : data) {
             final Map<?, ?> subtitle = (Map<?, ?>) entry;
             final int subtitleId = Integer.parseInt((String) subtitle.get("IDSubtitleFile"));
-
-            if (!ALLOW_HEARING_IMPAIRED_SUBTITLES) {
-                final boolean hearingImpaired = "1".equals(subtitle.get("SubHearingImpaired"));
-                if (hearingImpaired) {
-                    System.out.println("Skipping subtitle: " + subtitleId);
-                    continue;
-                }
-            }
-
+            final boolean hearingImpaired = "1".equals(subtitle.get("SubHearingImpaired"));
             final String encoding = (String) subtitle.get("SubEncoding");
 
-            System.out.println("Adding subtitle: " + subtitleId + " with encoding " + encoding);
-            subtitleSearchResults.add(new SubtitleSearchResult(subtitleId, encoding));
+            System.out.println("Adding subtitle " + subtitleId + " with encoding " + encoding + " (" + (hearingImpaired ? "" : "not ") + "hearing impaired)");
+            final SubtitleSearchResult result = new SubtitleSearchResult(subtitleId, encoding);
+            if (hearingImpaired) {
+                resultsHearingImpaired.add(result);
+            } else {
+                resultsNonHearingImpaired.add(result);
+            }
         }
-        return subtitleSearchResults;
+
+        final List<SubtitleSearchResult> results = new ArrayList<>();
+        if (PRIORITISE_HEARING_IMPAIRED) {
+            results.addAll(resultsHearingImpaired);
+            results.addAll(resultsNonHearingImpaired);
+        } else {
+            results.addAll(resultsNonHearingImpaired);
+            results.addAll(resultsHearingImpaired);
+        }
+        return results;
     }
 
     @Override
