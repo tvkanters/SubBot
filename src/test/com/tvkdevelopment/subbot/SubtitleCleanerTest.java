@@ -6,6 +6,8 @@ import org.junit.Test;
 
 public class SubtitleCleanerTest {
 
+    private static final String NEW_LINE = System.getProperty("line.separator");
+
     @Test
     public void testIllegalTexts() {
         final String[] illegalStrings = {
@@ -27,14 +29,15 @@ public class SubtitleCleanerTest {
                 "Want sharper video quality? Want\nclearer audio? Try GOM Player now!",
                 "StreamBox Pro - Best box for movies & shows on your TV!\nCheck out the reviews and order on GRATISSTREAMEN.NL",
                 "Professional Translation Services\nwww.gts-translation.com",
-                "Watch all episodes for free on\nwww.FlixTor.to"
+                "Watch all episodes for free on\nwww.FlixTor.to",
+                "<font color=#0000FF>ENGLISH SUBTITLE BY :\nFRIDODIDO</font>"
         };
         
         final String expected =
-                "919" + System.getProperty("line.separator") +
-                "00:53:46,869 --> 00:53:47,970" + System.getProperty("line.separator") +
-                "♪ <i>Twerk</i> ♪" + System.getProperty("line.separator") +
-                System.getProperty("line.separator");
+                "919" + NEW_LINE +
+                "00:53:46,869 --> 00:53:47,970" + NEW_LINE +
+                "♪ <i>Twerk</i> ♪" + NEW_LINE +
+                NEW_LINE;
 
         for (final String illegalString : illegalStrings) {
             final String result = SubtitleCleaner.clean(expected + wrapSubtitle(illegalString));
@@ -56,10 +59,10 @@ public class SubtitleCleanerTest {
         };
         
         final String expectedSingleBlock =
-                "919" + System.getProperty("line.separator") +
-                "00:53:46,869 --> 00:53:47,970" + System.getProperty("line.separator") +
-                "♪ <i>Twerk</i> ♪" + System.getProperty("line.separator") +
-                System.getProperty("line.separator");
+                "919" + NEW_LINE +
+                "00:53:46,869 --> 00:53:47,970" + NEW_LINE +
+                "♪ <i>Twerk</i> ♪" + NEW_LINE +
+                NEW_LINE;
 
         for (final String stringToRemove : stringsToRemove) {
             assertEquals(expectedSingleBlock, SubtitleCleaner.clean(expectedSingleBlock + wrapSubtitle(stringToRemove)));
@@ -74,24 +77,24 @@ public class SubtitleCleanerTest {
                 "<i>[music]</i>",
                 "<I>- [MUSIC]</I>",
                 "- ¶ ¶ ♪ ♫",
-                "<i>¶ ¶" + System.getProperty("line.separator") + "♪ ♫</i>",
-                "<i>[I Monster's" + System.getProperty("line.separator") + "\"Daydream In Blue\" playing]</i>",
+                "<i>¶ ¶" + NEW_LINE + "♪ ♫</i>",
+                "<i>[I Monster's" + NEW_LINE + "\"Daydream In Blue\" playing]</i>",
                 "(!)",
                 "- _"
         };
 
         final String firstBlock =
-                "919" + System.getProperty("line.separator") +
-                "00:53:46,869 --> 00:53:47,970" + System.getProperty("line.separator") +
-                "♪ <i>Twerk</i> ♪" + System.getProperty("line.separator") +
-                System.getProperty("line.separator");
+                "919" + NEW_LINE +
+                "00:53:46,869 --> 00:53:47,970" + NEW_LINE +
+                "♪ <i>Twerk</i> ♪" + NEW_LINE +
+                NEW_LINE;
         final String expectedBlocks =
                 firstBlock +
-                "920" + System.getProperty("line.separator") +
-                "00:54:46,869 --> 00:54:47,970" + System.getProperty("line.separator") +
-                "Boop" + System.getProperty("line.separator") +
-                "Bop" + System.getProperty("line.separator") +
-                System.getProperty("line.separator");
+                "920" + NEW_LINE +
+                "00:54:46,869 --> 00:54:47,970" + NEW_LINE +
+                "Boop" + NEW_LINE +
+                "Bop" + NEW_LINE +
+                NEW_LINE;
 
         for (final String stringToRemove : stringsToRemove) {
             assertEquals(expectedBlocks, SubtitleCleaner.clean(firstBlock + wrapHearingImpaired(stringToRemove)));
@@ -99,31 +102,31 @@ public class SubtitleCleanerTest {
 
         final String expectedBlocksEnd =
                 firstBlock +
-                "920" + System.getProperty("line.separator") +
-                "00:54:46,869 --> 00:54:47,970" + System.getProperty("line.separator") +
-                "Boop" + System.getProperty("line.separator") +
-                System.getProperty("line.separator");
-        assertEquals(expectedBlocksEnd, SubtitleCleaner.clean(firstBlock + wrapSubtitle("Boop" + System.getProperty("line.separator") + "[music]")));
+                "920" + NEW_LINE +
+                "00:54:46,869 --> 00:54:47,970" + NEW_LINE +
+                "Boop" + NEW_LINE +
+                NEW_LINE;
+        assertEquals(expectedBlocksEnd, SubtitleCleaner.clean(firstBlock + wrapSubtitle("Boop" + NEW_LINE + "[music]")));
 
         final String expectedBlocksStart =
                 firstBlock +
-                "920" + System.getProperty("line.separator") +
-                "00:54:46,869 --> 00:54:47,970" + System.getProperty("line.separator") +
-                "Bop" + System.getProperty("line.separator") +
-                System.getProperty("line.separator");
-        assertEquals(expectedBlocksStart, SubtitleCleaner.clean(firstBlock + wrapSubtitle("[music]" + System.getProperty("line.separator") + "Bop")));
+                "920" + NEW_LINE +
+                "00:54:46,869 --> 00:54:47,970" + NEW_LINE +
+                "Bop" + NEW_LINE +
+                NEW_LINE;
+        assertEquals(expectedBlocksStart, SubtitleCleaner.clean(firstBlock + wrapSubtitle("[music]" + NEW_LINE + "Bop")));
     }
 
     private String wrapSubtitle(final String subtitle) {
-        return "920" + System.getProperty("line.separator") +
-                "00:54:46,869 --> 00:54:47,970" + System.getProperty("line.separator") +
-                subtitle + System.getProperty("line.separator") +
-                System.getProperty("line.separator");
+        return "920" + NEW_LINE +
+                "00:54:46,869 --> 00:54:47,970" + NEW_LINE +
+                subtitle + NEW_LINE +
+                NEW_LINE;
     }
 
     private String wrapHearingImpaired(final String hearingImpairedPiece) {
-        return wrapSubtitle("Boop" + System.getProperty("line.separator") +
-                hearingImpairedPiece + System.getProperty("line.separator") +
+        return wrapSubtitle("Boop" + NEW_LINE +
+                hearingImpairedPiece + NEW_LINE +
                 "Bop");
     }
 

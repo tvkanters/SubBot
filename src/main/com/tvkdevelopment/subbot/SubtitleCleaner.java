@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import com.tvkdevelopment.subbot.model.SubtitleBlock;
 import com.tvkdevelopment.subbot.parsing.SubtitleParser;
+import org.intellij.lang.annotations.Language;
 
 public class SubtitleCleaner {
 
@@ -15,48 +16,60 @@ public class SubtitleCleaner {
 
     private static final String NEW_LINE = "(?:\\r?\\n)";
 
+    private static Pattern regex(@Language("RegExp") final String regex) {
+        return regex(regex, false, false);
+    }
+
+    private static Pattern regex(@Language("RegExp") final String regex, final boolean caseSensitive, final boolean multiLine) {
+        final int flags = (caseSensitive ? 0 : Pattern.CASE_INSENSITIVE)
+                | (multiLine ? Pattern.MULTILINE : 0);
+        return Pattern.compile(regex, flags);
+    }
+
     private static final Pattern[] sSpamPatterns = {
-            Pattern.compile("Original Air Date", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("rate this subtitle", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("osdb\\.link", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("HumanGuardians.com", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("LookLive", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("recast\\.ai", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("bitninja", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("^[\\s*_-]+$", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("GOM\\s*Player", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("StreamBox", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("gts-translation\\.com", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("AmericasCardroom", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("FlixTor", Pattern.CASE_INSENSITIVE)
+            regex("Original Air Date"),
+            regex("rate this subtitle"),
+            regex("osdb\\.link"),
+            regex("HumanGuardians.com"),
+            regex("LookLive"),
+            regex("recast\\.ai"),
+            regex("bitninja"),
+            regex("^[\\s*_-]+$"),
+            regex("GOM\\s*Player"),
+            regex("StreamBox"),
+            regex("gts-translation\\.com"),
+            regex("AmericasCardroom"),
+            regex("FlixTor"),
+            regex("psagmeno")
     };
 
     private static final Pattern[] sCreditsPatterns = {
-            Pattern.compile("\\s+by\\s*(?:</font>\\s*)?<font color=", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("elderman", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("OpenSubtitles", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("Subscene", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("addic7ed", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("honeybunny", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("tvsubtitles", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("Ripped By", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("Sync(?:ed)?[^a-z]+correct(?:ed)?", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("piratebay", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("(?<!a-z)kat\\.", Pattern.CASE_INSENSITIVE)
+            regex("\\s+by\\s*(?:</font>\\s*)?<font color="),
+            regex("elderman"),
+            regex("OpenSubtitles"),
+            regex("Subscene"),
+            regex("addic7ed"),
+            regex("honeybunny"),
+            regex("tvsubtitles"),
+            regex("Ripped By"),
+            regex("Sync(?:ed)?[^a-z]+correct(?:ed)?"),
+            regex("piratebay"),
+            regex("(?<!a-z)kat\\."),
+            regex("subtitles? by")
     };
 
     private static final Pattern[] sHearingImpairedPatterns = {
-            Pattern.compile("(?:<i>)?(?:- ?)?\\[[^\\]]*\\](?:</i>)?" + NEW_LINE + "?", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-            Pattern.compile("(?:<i>)?(?:- ?)?\\([^)]*\\)(?:</i>)?" + NEW_LINE + "?", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-            Pattern.compile("^(?:<i>)?[¶♪♫ \\n\\r-]*(?:</i>)?(?:" + NEW_LINE + "|$)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE)
+            regex("(?:<i>)?(?:- ?)?\\[[^\\]]*\\](?:</i>)?" + NEW_LINE + "?", false, true),
+            regex("(?:<i>)?(?:- ?)?\\([^)]*\\)(?:</i>)?" + NEW_LINE + "?", false, true),
+            regex("^(?:<i>)?[¶♪♫ \\n\\r-]*(?:</i>)?(?:" + NEW_LINE + "|$)", false, true)
     };
 
     private static final Pattern[] sReplacementPatterns = {
-            Pattern.compile("\\. \\. \\."), // Ellipsis
-            Pattern.compile("\\(!\\)"), // Singular exclamation
-            Pattern.compile("(\\s|^)([cC])os(\\s|$)"), // cos -> 'cause
-            Pattern.compile(" ([?!])", Pattern.CASE_INSENSITIVE), // Spaces before exclamation
-            Pattern.compile("([\\n\\r]+|^)-?\\s*_(?=([\\n\\r]+|$))") // Just underscores
+            regex("\\. \\. \\."), // Ellipsis
+            regex("\\(!\\)"), // Singular exclamation
+            regex("(\\s|^)([cC])os(\\s|$)"), // cos -> 'cause
+            regex(" ([?!])"), // Spaces before exclamation
+            regex("([\\n\\r]+|^)-?\\s*_(?=([\\n\\r]+|$))") // Just underscores
     };
 
     private static final String[] sReplacementResults = {
