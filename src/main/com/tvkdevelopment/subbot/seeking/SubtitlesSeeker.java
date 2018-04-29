@@ -59,10 +59,13 @@ public interface SubtitlesSeeker {
         public final int id;
         /** The encoding used for the downloaded subtitle */
         public final String encoding;
+        /** Whether or not this subtitles is meant for a hearing impaired audience. */
+        public final boolean hearingImpaired;
 
-        public SubtitleSearchResult(final int id, final String encoding) {
+        public SubtitleSearchResult(final int id, final String encoding, final boolean hearingImpaired) {
             this.id = id;
             this.encoding = encoding;
+            this.hearingImpaired = hearingImpaired;
         }
     }
 }

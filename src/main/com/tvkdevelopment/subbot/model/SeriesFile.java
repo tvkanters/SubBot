@@ -21,6 +21,7 @@ import com.tvkdevelopment.subbot.seeking.TvMazeSeeker;
 public class SeriesFile {
 
     private static final String SUBTITLE_DIRECTORY = "Subtitles";
+    private static final String SUBTITLE_DIRECTORY_HEARING_IMPAIRED = "Subtitles HI";
     private static final String SUBTITLE_EXTENSION = ".srt";
     private static final int SUBTITLE_LIMIT = 5;
 
@@ -32,7 +33,9 @@ public class SeriesFile {
     private final String mTitle;
     private final String mExtension;
     private final File mSubtitlesDirectory;
+    private final File mSubtitlesDirectoryHearingImpaired;
     private final String mSubtitlesFilePath;
+    private final String mSubtitlesFilePathHearingImpaired;
 
     public SeriesFile(final File file) throws FilenameFormatException, UnknownSeriesTitleException, UnknownEpisodeException {
         this(file, new TvMazeSeeker(getSeriesTitle(file)));
@@ -56,8 +59,18 @@ public class SeriesFile {
         }
         mTitle = titlePrefix + " - " + title;
         mExtension = mFilename.substring(mFilename.lastIndexOf('.') + 1);
-        mSubtitlesDirectory = new File(mFile.getParentFile().getPath() + File.separator + SUBTITLE_DIRECTORY);
-        mSubtitlesFilePath = mSubtitlesDirectory.getPath() + File.separator + FileManager.cleanFilename(mTitle);
+        mSubtitlesDirectory = getSubtitlesDirectory(SUBTITLE_DIRECTORY);
+        mSubtitlesDirectoryHearingImpaired = getSubtitlesDirectory(SUBTITLE_DIRECTORY_HEARING_IMPAIRED);
+        mSubtitlesFilePath = getSubtitlesFilePath(mSubtitlesDirectory);
+        mSubtitlesFilePathHearingImpaired = getSubtitlesFilePath(mSubtitlesDirectoryHearingImpaired);
+    }
+
+    private File getSubtitlesDirectory(final String subtitleDirectory) {
+        return new File(mFile.getParentFile().getPath() + File.separator + subtitleDirectory);
+    }
+
+    private String getSubtitlesFilePath(final File subtitlesDirectory) {
+        return subtitlesDirectory.getPath() + File.separator + FileManager.cleanFilename(mTitle);
     }
 
     private static String getSeriesTitle(final File file) {
@@ -115,11 +128,16 @@ public class SeriesFile {
         if (!mSubtitlesDirectory.exists()) {
             mSubtitlesDirectory.mkdir();
         }
+        if (!mSubtitlesDirectoryHearingImpaired.exists()) {
+            mSubtitlesDirectoryHearingImpaired.mkdir();
+        }
 
         final List<String> subtitles = seeker.download(subtitleSearchResultsTrimmed);
         subtitleLoop:
-            for (int i = 0; i < subtitles.size(); ++i) {
-            File subtitlesFile = new File(mSubtitlesFilePath + SUBTITLE_EXTENSION);
+        for (int i = 0; i < subtitles.size(); ++i) {
+            final SubtitleSearchResult subtitle = subtitleSearchResultsTrimmed.get(i);
+            final String baseFilePath = getFilePathForSubtitle(subtitle);
+            File subtitlesFile = new File(baseFilePath + SUBTITLE_EXTENSION);
 
             int attempt = 0;
             while (subtitlesFile.exists()) {
@@ -127,16 +145,25 @@ public class SeriesFile {
                 if (attempt == SUBTITLE_LIMIT) {
                     continue subtitleLoop;
                 }
-                subtitlesFile = new File(mSubtitlesFilePath + "–" + attempt + SUBTITLE_EXTENSION);
+                subtitlesFile = new File(baseFilePath + "–" + attempt + SUBTITLE_EXTENSION);
             }
 
             final String cleanedSubtitle = SubtitleCleaner.clean(subtitles.get(i));
-            FileManager.saveFile(subtitlesFile, cleanedSubtitle, subtitleSearchResultsTrimmed.get(i).encoding);
+            FileManager.saveFile(subtitlesFile, cleanedSubtitle, subtitle.encoding);
+        }
+    }
+
+    private String getFilePathForSubtitle(final SubtitleSearchResult subtitle) {
+        if (subtitle.hearingImpaired) {
+            return mSubtitlesFilePathHearingImpaired;
+        } else {
+            return mSubtitlesFilePath;
         }
     }
 
     public boolean hasSubtitles() {
-        return new File(mSubtitlesFilePath + SUBTITLE_EXTENSION).exists();
+        return new File(mSubtitlesFilePath + SUBTITLE_EXTENSION).exists()
+                || new File(mSubtitlesFilePathHearingImpaired + SUBTITLE_EXTENSION).exists();
     }
 
     public void rename() {

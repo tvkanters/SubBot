@@ -207,7 +207,7 @@ public class OpenSubtitlesSeeker implements SubtitlesSeeker {
             final String encoding = (String) subtitle.get("SubEncoding");
 
             System.out.println("Adding subtitle " + subtitleId + " with encoding " + encoding + " (" + (hearingImpaired ? "" : "not ") + "hearing impaired)");
-            final SubtitleSearchResult result = new SubtitleSearchResult(subtitleId, encoding);
+            final SubtitleSearchResult result = new SubtitleSearchResult(subtitleId, encoding, hearingImpaired);
             if (hearingImpaired) {
                 resultsHearingImpaired.add(result);
             } else {
