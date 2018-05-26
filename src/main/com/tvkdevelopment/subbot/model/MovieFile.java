@@ -11,29 +11,44 @@ import com.tvkdevelopment.subbot.seeking.SubtitlesSeeker;
 
 public class MovieFile {
 
-    private static String SUBTITLE_DIRECTORY = "Subtitles";
-    private static String SUBTITLE_EXTENSION = ".srt";
-    private static int SUBTITLE_LIMIT = 10;
+    private static final String SUBTITLE_DIRECTORY = "Subtitles";
+    private static final String SUBTITLE_DIRECTORY_HEARING_IMPAIRED = "Subtitles HI";
+    private static final String SUBTITLE_EXTENSION = ".srt";
+    private static final int SUBTITLE_LIMIT = 10;
 
     private final File mFile;
-    private final String mFilename;
     private final String mTitle;
-    private final File mSubtitlesDirectory;
     private final String mSubtitlesFilePath;
+    private final String mSubtitlesFilePathHearingImpaired;
 
     public MovieFile(final File file) {
         mFile = file;
-        mFilename = file.getName();
 
-        mTitle = mFilename.substring(0, mFilename.lastIndexOf('.'));
+        final String filename = file.getName();
+        mTitle = filename.substring(0, filename.lastIndexOf('.'));
 
-        final String parentPath = mFile.getParentFile().getPath();
-        mSubtitlesDirectory = new File(parentPath + File.separator + SUBTITLE_DIRECTORY);
-        if (mSubtitlesDirectory.exists()) {
-            mSubtitlesFilePath = mSubtitlesDirectory.getPath() + File.separator + mTitle;
+        final File parentFile = mFile.getParentFile();
+        final String parentPath = parentFile.getPath();
+        final File subtitlesDirectory = getSubtitlesDirectory(parentPath, SUBTITLE_DIRECTORY);
+        final File subtitlesDirectoryHearingImpaired = getSubtitlesDirectory(parentPath, SUBTITLE_DIRECTORY_HEARING_IMPAIRED);
+
+        if (subtitlesDirectory.exists() || subtitlesDirectoryHearingImpaired.exists()) {
+            subtitlesDirectory.mkdir();
+            subtitlesDirectoryHearingImpaired.mkdir();
+            mSubtitlesFilePath = getSubtitlesFilePath(subtitlesDirectory);
+            mSubtitlesFilePathHearingImpaired = getSubtitlesFilePath(subtitlesDirectoryHearingImpaired);
         } else {
-            mSubtitlesFilePath = parentPath + File.separator + mTitle;
+            mSubtitlesFilePath = getSubtitlesFilePath(parentFile);
+            mSubtitlesFilePathHearingImpaired = getSubtitlesFilePath(parentFile);
         }
+    }
+
+    private File getSubtitlesDirectory(final String parentPath, final String subtitleDirectory) {
+        return new File(parentPath + File.separator + subtitleDirectory);
+    }
+
+    private String getSubtitlesFilePath(final File subtitlesDirectory) {
+        return subtitlesDirectory.getPath() + File.separator + FileManager.cleanFilename(mTitle);
     }
 
     public void installSubtitles(final SubtitlesSeeker seeker) {
@@ -52,23 +67,29 @@ public class MovieFile {
         int attempt = 0;
         subtitleLoop:
         for (int i = 0; i < subtitles.size(); ++i) {
-            File subtitlesFile = new File(mSubtitlesFilePath + SUBTITLE_EXTENSION);
+            final SubtitleSearchResult subtitle = subtitleSearchResultsTrimmed.get(i);
+            final String baseFilePath = getFilePathForSubtitle(subtitle);
+            File subtitlesFile = new File(baseFilePath + SUBTITLE_EXTENSION);
 
             while (subtitlesFile.exists()) {
                 ++attempt;
                 if (attempt == SUBTITLE_LIMIT) {
                     break subtitleLoop;
                 }
-                subtitlesFile = new File(mSubtitlesFilePath + "–" + attempt + SUBTITLE_EXTENSION);
+                subtitlesFile = new File(baseFilePath + "–" + attempt + SUBTITLE_EXTENSION);
             }
 
             final String cleanedSubtitle = SubtitleCleaner.clean(subtitles.get(i));
-            FileManager.saveFile(subtitlesFile, cleanedSubtitle, subtitleSearchResultsTrimmed.get(i).encoding);
+            FileManager.saveFile(subtitlesFile, cleanedSubtitle, subtitle.encoding);
         }
     }
 
-    public boolean hasSubtitles() {
-        return new File(mSubtitlesFilePath + SUBTITLE_EXTENSION).exists();
+    private String getFilePathForSubtitle(final SubtitleSearchResult subtitle) {
+        if (subtitle.hearingImpaired) {
+            return mSubtitlesFilePathHearingImpaired;
+        } else {
+            return mSubtitlesFilePath;
+        }
     }
 
 }

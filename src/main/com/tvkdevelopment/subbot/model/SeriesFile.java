@@ -26,10 +26,7 @@ public class SeriesFile {
     private static final int SUBTITLE_LIMIT = 5;
 
     private final File mFile;
-    private final String mFilename;
     private final EpisodeTitleSeeker mTitleSeeker;
-    private final Episode mEpisode;
-    private final Optional<Episode> mConjoinedEpisode;
     private final String mTitle;
     private final String mExtension;
     private final File mSubtitlesDirectory;
@@ -43,22 +40,22 @@ public class SeriesFile {
 
     public SeriesFile(final File file, final EpisodeTitleSeeker titleSeeker) throws FilenameFormatException, UnknownSeriesTitleException, UnknownEpisodeException {
         mFile = file;
-        mFilename = file.getName();
         mTitleSeeker = titleSeeker;
 
-        final EpisodeParser.Result parsedEpisodes = EpisodeParser.parseFilename(mFilename);
-        mEpisode = parsedEpisodes.getEpisode();
-        mConjoinedEpisode = parsedEpisodes.getConjoinedEpisode();
+        final String filename = file.getName();
+        final EpisodeParser.Result parsedEpisodes = EpisodeParser.parseFilename(filename);
+        final Episode episode = parsedEpisodes.getEpisode();
+        final Optional<Episode> optionalConjoinedEpisode = parsedEpisodes.getConjoinedEpisode();
 
-        String titlePrefix = mEpisode.toString();
-        String title = titleSeeker.seekEpisodeTitle(mEpisode);
-        if (mConjoinedEpisode.isPresent()) {
-            final Episode conjoinedEpisode = mConjoinedEpisode.get();
+        String titlePrefix = episode.toString();
+        String title = titleSeeker.seekEpisodeTitle(episode);
+        if (optionalConjoinedEpisode.isPresent()) {
+            final Episode conjoinedEpisode = optionalConjoinedEpisode.get();
             titlePrefix += "-" + conjoinedEpisode.getNumberString();
             title += " - " + titleSeeker.seekEpisodeTitle(conjoinedEpisode);
         }
         mTitle = titlePrefix + " - " + title;
-        mExtension = mFilename.substring(mFilename.lastIndexOf('.') + 1);
+        mExtension = filename.substring(filename.lastIndexOf('.') + 1);
         mSubtitlesDirectory = getSubtitlesDirectory(SUBTITLE_DIRECTORY);
         mSubtitlesDirectoryHearingImpaired = getSubtitlesDirectory(SUBTITLE_DIRECTORY_HEARING_IMPAIRED);
         mSubtitlesFilePath = getSubtitlesFilePath(mSubtitlesDirectory);
@@ -125,12 +122,8 @@ public class SeriesFile {
         }
         final List<SubtitleSearchResult> subtitleSearchResultsTrimmed = subtitleResults.get().subList(0, Math.min(subtitleResults.get().size(), SUBTITLE_LIMIT));
 
-        if (!mSubtitlesDirectory.exists()) {
-            mSubtitlesDirectory.mkdir();
-        }
-        if (!mSubtitlesDirectoryHearingImpaired.exists()) {
-            mSubtitlesDirectoryHearingImpaired.mkdir();
-        }
+        mSubtitlesDirectory.mkdir();
+        mSubtitlesDirectoryHearingImpaired.mkdir();
 
         final List<String> subtitles = seeker.download(subtitleSearchResultsTrimmed);
         subtitleLoop:
