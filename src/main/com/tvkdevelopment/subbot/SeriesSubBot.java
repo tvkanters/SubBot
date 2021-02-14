@@ -31,7 +31,10 @@ public class SeriesSubBot {
         }
 
         final SubtitlesSeeker subtitleSeeker = new OpenSubtitlesSeeker();
-        subtitleSeeker.logIn("", "");
+        final boolean loggedIn = subtitleSeeker.logIn("", "");
+        if (!loggedIn) {
+            throw new IllegalStateException("Couldn't log in");
+        }
 
         EpisodeTitleSeeker titleSeeker = null;
         for (final File file : videoFiles) {

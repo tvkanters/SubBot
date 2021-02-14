@@ -70,13 +70,14 @@ public class OpenSubtitlesSeeker implements SubtitlesSeeker {
                 mToken = (String) response.get("token");
                 System.out.println("Logged in - Token: " + mToken);
                 return true;
+            } else {
+                System.out.println("Logged in failed");
+                return false;
             }
         } catch (final XmlRpcException ex) {
             ex.printStackTrace();
             return false;
         }
-
-        return false;
     }
 
     @Override
