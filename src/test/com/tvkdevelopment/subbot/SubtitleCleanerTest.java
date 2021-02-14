@@ -2,11 +2,20 @@ package com.tvkdevelopment.subbot;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Before;
 import org.junit.Test;
 
 public class SubtitleCleanerTest {
 
     private static final String NEW_LINE = System.getProperty("line.separator");
+
+    @Before
+    public void setUp() {
+        SubtitleCleaner.STRIP_SPAM = true;
+        SubtitleCleaner.STRIP_CREDITS = true;
+        SubtitleCleaner.STRIP_HEARING_IMPAIRED = true;
+        SubtitleCleaner.REPLACEMENTS = true;
+    }
 
     @Test
     public void testIllegalTexts() {
@@ -30,7 +39,19 @@ public class SubtitleCleanerTest {
                 "StreamBox Pro - Best box for movies & shows on your TV!\nCheck out the reviews and order on GRATISSTREAMEN.NL",
                 "Professional Translation Services\nwww.gts-translation.com",
                 "Watch all episodes for free on\nwww.FlixTor.to",
-                "<font color=#0000FF>ENGLISH SUBTITLE BY :\nFRIDODIDO</font>"
+                "<font color=#0000FF>ENGLISH SUBTITLE BY :\nFRIDODIDO</font>",
+                "primewire.ag is back!\nStream any Movie or TV show",
+                "sync:fisherchen\nRe-edit & ProofRead by SooN (MSN: ts_leo@hotmail.com)\nwww.ydy.com",
+                "Transcript: ydy.com - Synchro: jh26",
+                "Synchro: K!r!lleXXI\n[WEB-DL 720p LinkinPark]",
+                "<font color=#38B0DE>-=www.ydy.com/bbs=-Proudly Presents</font>",
+                "<font color=#FFFF00>www. ydy. com proudly presents</font>",
+                "–=www.ydy.com/bbs=-Proudly Presents",
+                "Host: www.CsSubs.org - Thanks Guys",
+                "<i>Transcript: swsub.com</i>",
+                "Watch free HD Movies and TV Shows at\nStreamingSites.com",
+                "Subtitles downloaded from Podnapisi.NET",
+                "Visit bird-hd.info for more m720p Movies Encoded By BiRD"
         };
         
         final String expected =

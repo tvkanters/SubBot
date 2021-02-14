@@ -9,10 +9,10 @@ import org.intellij.lang.annotations.Language;
 
 public class SubtitleCleaner {
 
-    private static final boolean STRIP_SPAM = true;
-    private static final boolean STRIP_CREDITS = true;
-    private static final boolean STRIP_HEARING_IMPAIRED = !Config.HEARING_IMPAIRED_MODE;
-    private static final boolean REPLACEMENTS = true;
+    static boolean STRIP_SPAM = true;
+    static boolean STRIP_CREDITS = true;
+    static boolean STRIP_HEARING_IMPAIRED = !Config.HEARING_IMPAIRED_MODE;
+    static boolean REPLACEMENTS = true;
 
     private static final String NEW_LINE = "(?:\\r?\\n)";
 
@@ -40,7 +40,18 @@ public class SubtitleCleaner {
             regex("gts-translation\\.com"),
             regex("AmericasCardroom"),
             regex("FlixTor"),
-            regex("psagmeno")
+            regex("psagmeno"),
+            regex("primewire"),
+            regex("CsSubs"),
+            regex("ydy[^\\w]*com"),
+            regex("piratebay"),
+            regex("(?<!a-z)kat\\."),
+            regex("swsub.com"),
+            regex("StreamingSites"),
+            regex("watch.*\\.(?:com|org)"),
+            regex("Podnapisi\\.NET"),
+            regex("Subtitles? downloaded"),
+            regex("bird-hd")
     };
 
     private static final Pattern[] sCreditsPatterns = {
@@ -53,9 +64,10 @@ public class SubtitleCleaner {
             regex("tvsubtitles"),
             regex("Ripped By"),
             regex("Sync(?:ed)?[^a-z]+correct(?:ed)?"),
-            regex("piratebay"),
-            regex("(?<!a-z)kat\\."),
-            regex("subtitles? by")
+            regex("subtit[^ ]+? by"),
+            regex("sync:"),
+            regex("Synchro:"),
+            regex("Transcript:")
     };
 
     private static final Pattern[] sHearingImpairedPatterns = {
