@@ -51,7 +51,9 @@ public class SubtitleCleaner {
             regex("watch.*\\.(?:com|org)"),
             regex("Podnapisi\\.NET"),
             regex("Subtitles? downloaded"),
-            regex("bird-hd")
+            regex("bird-hd"),
+            regex("iSubDB"),
+            regex("Subtitles search")
     };
 
     private static final Pattern[] sCreditsPatterns = {
