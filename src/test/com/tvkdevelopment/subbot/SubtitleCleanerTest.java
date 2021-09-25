@@ -52,7 +52,8 @@ public class SubtitleCleanerTest {
                 "Watch free HD Movies and TV Shows at\nStreamingSites.com",
                 "Subtitles downloaded from Podnapisi.NET",
                 "Visit bird-hd.info for more m720p Movies Encoded By BiRD",
-                "iSubDB.com - fast, modern, simple\nSubtitles search by drag & drop"
+                "iSubDB.com - fast, modern, simple\nSubtitles search by drag & drop",
+                "Captioned by So and So"
         };
         
         final String expected =

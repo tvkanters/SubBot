@@ -5,7 +5,6 @@ import java.util.regex.Pattern;
 
 import com.tvkdevelopment.subbot.model.SubtitleBlock;
 import com.tvkdevelopment.subbot.parsing.SubtitleParser;
-import org.intellij.lang.annotations.Language;
 
 public class SubtitleCleaner {
 
@@ -16,11 +15,11 @@ public class SubtitleCleaner {
 
     private static final String NEW_LINE = "(?:\\r?\\n)";
 
-    private static Pattern regex(@Language("RegExp") final String regex) {
+    private static Pattern regex(final String regex) {
         return regex(regex, false, false);
     }
 
-    private static Pattern regex(@Language("RegExp") final String regex, final boolean caseSensitive, final boolean multiLine) {
+    private static Pattern regex(final String regex, final boolean caseSensitive, final boolean multiLine) {
         final int flags = (caseSensitive ? 0 : Pattern.CASE_INSENSITIVE)
                 | (multiLine ? Pattern.MULTILINE : 0);
         return Pattern.compile(regex, flags);
@@ -67,6 +66,7 @@ public class SubtitleCleaner {
             regex("Ripped By"),
             regex("Sync(?:ed)?[^a-z]+correct(?:ed)?"),
             regex("subtit[^ ]+? by"),
+            regex("caption[^ ]+? by"),
             regex("sync:"),
             regex("Synchro:"),
             regex("Transcript:")
