@@ -19,7 +19,6 @@ public class MovieFile {
     private final File mFile;
     private final String mTitle;
     private final String mSubtitlesFilePath;
-    private final String mSubtitlesFilePathHearingImpaired;
 
     public MovieFile(final File file) {
         mFile = file;
@@ -36,10 +35,8 @@ public class MovieFile {
             subtitlesDirectory.mkdir();
             subtitlesDirectoryHearingImpaired.mkdir();
             mSubtitlesFilePath = getSubtitlesFilePath(subtitlesDirectory);
-            mSubtitlesFilePathHearingImpaired = getSubtitlesFilePath(subtitlesDirectoryHearingImpaired);
         } else {
             mSubtitlesFilePath = getSubtitlesFilePath(parentFile);
-            mSubtitlesFilePathHearingImpaired = getSubtitlesFilePath(parentFile);
         }
     }
 
@@ -68,15 +65,15 @@ public class MovieFile {
         subtitleLoop:
         for (int i = 0; i < subtitles.size(); ++i) {
             final SubtitleSearchResult subtitle = subtitleSearchResultsTrimmed.get(i);
-            final String baseFilePath = getFilePathForSubtitle(subtitle);
-            File subtitlesFile = new File(baseFilePath + SUBTITLE_EXTENSION);
+            final String suffix = getSubtitleSuffix(subtitle);
+            File subtitlesFile = new File(mSubtitlesFilePath + suffix);
 
             while (subtitlesFile.exists()) {
                 ++attempt;
                 if (attempt == SUBTITLE_LIMIT) {
                     break subtitleLoop;
                 }
-                subtitlesFile = new File(baseFilePath + "–" + attempt + SUBTITLE_EXTENSION);
+                subtitlesFile = new File(mSubtitlesFilePath + "–" + attempt + suffix);
             }
 
             final String cleanedSubtitle = SubtitleCleaner.clean(subtitles.get(i));
@@ -84,12 +81,13 @@ public class MovieFile {
         }
     }
 
-    private String getFilePathForSubtitle(final SubtitleSearchResult subtitle) {
+    private String getSubtitleSuffix(final SubtitleSearchResult subtitle) {
+        final StringBuilder suffix = new StringBuilder();
         if (subtitle.hearingImpaired) {
-            return mSubtitlesFilePathHearingImpaired;
-        } else {
-            return mSubtitlesFilePath;
+            suffix.append(".sdh");
         }
+        suffix.append(SUBTITLE_EXTENSION);
+        return suffix.toString();
     }
 
 }
