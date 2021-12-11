@@ -69,7 +69,9 @@ public class SubtitleCleaner {
             regex("caption[^ ]+? by"),
             regex("sync:"),
             regex("Synchro:"),
-            regex("Transcript:")
+            regex("Transcript:"),
+            regex("subtitle.*translation"),
+            regex("provided by(.|\\n)*http")
     };
 
     private static final Pattern[] sHearingImpairedPatterns = {
@@ -109,7 +111,7 @@ public class SubtitleCleaner {
                 continue;
             }
 
-            cleanedSubtitle.append(subtitleBlock.toString());
+            cleanedSubtitle.append(subtitleBlock);
         }
 
         return cleanedSubtitle.toString();

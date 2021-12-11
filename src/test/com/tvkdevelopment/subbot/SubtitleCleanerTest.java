@@ -53,7 +53,9 @@ public class SubtitleCleanerTest {
                 "Subtitles downloaded from Podnapisi.NET",
                 "Visit bird-hd.info for more m720p Movies Encoded By BiRD",
                 "iSubDB.com - fast, modern, simple\nSubtitles search by drag & drop",
-                "Captioned by So and So"
+                "Captioned by So and So",
+                "Subtitle translation by: Qianni Lu",
+                "Provided by explosiveskull\nhttps://twitter.com/kaboomskull"
         };
         
         final String expected =
